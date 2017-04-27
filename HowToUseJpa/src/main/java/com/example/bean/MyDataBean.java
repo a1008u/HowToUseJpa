@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MyDataBean {
     
+	private Integer id;
+	
     private String name;
     
     private int age;

@@ -23,28 +23,46 @@ public class MyDataService {
 	// 【Crud】--------------------------------------------
 	
 	// 【cRud】--------------------------------------------
-		public  List<MyDataBean> find_All() {
-			
-			List<MyData> MyDatalList = MyDataRepository.findAll();
-			List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
-			
-	        return  MyDataBeanList;
-		}
+	public MyDataBean findByid(MyDataBean MyDataBean) {
 		
+		MyData MyData = MyDataRepository.findByid(MyDataBean.getId());
 		
-		private List<MyDataBean> from_MyDatalList_To_MyDataBean(List<MyData> MyDatalList){
+		if (MyData == null) return MyDataBean;
+		
+		BeanUtils.copyProperties(MyData, MyDataBean);
+		
+		return MyDataBean;
+	}
+	
+	public  List<MyDataBean> find_All() {
+		
+		List<MyData> MyDatalList = MyDataRepository.findAll();
+		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
+		
+        return  MyDataBeanList;
+	}
+	
+	private List<MyDataBean> from_MyDatalList_To_MyDataBean(List<MyData> MyDatalList){
 
-			List<MyDataBean> MyDataBeanList =  new ArrayList<>();
-			MyDatalList.stream()
-					   .forEach(MyData -> {
-						   MyDataBean MyDataBean = new MyDataBean();
-						   BeanUtils.copyProperties(MyData, MyDataBean);
-						   MyDataBeanList.add(MyDataBean);
-						});
-			return MyDataBeanList;
+		List<MyDataBean> MyDataBeanList =  new ArrayList<>();
+		MyDatalList.stream()
+				   .forEach(MyData -> {
+					   MyDataBean MyDataBean = new MyDataBean();
+					   BeanUtils.copyProperties(MyData, MyDataBean);
+					   MyDataBeanList.add(MyDataBean);
+					});
+		return MyDataBeanList;
 
-		}
+	}
 		
 	// 【crUd】--------------------------------------------
+	public void update(MyDataBean MyDataBean) {
+				
+				MyData MyData = MyDataRepository.findByid(MyDataBean.getId());
+				if (MyData != null) {
+					BeanUtils.copyProperties(MyDataBean, MyData);
+					MyDataRepository.saveAndFlush(MyData);
+				}
+			}
 	// 【cruD】--------------------------------------------
 }

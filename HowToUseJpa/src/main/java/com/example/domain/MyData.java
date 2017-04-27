@@ -19,7 +19,7 @@ public class MyData {
 	
 	@Id
     @GeneratedValue
-    private int id;
+    private Integer id;
     
     @Column(nullable = false)
     private String name;
