@@ -25,7 +25,7 @@ public class MyData {
     private String name;
     
     @Column
-    private int age;
+    private String age;
     
     @Column
     private String message;

@@ -14,7 +14,7 @@ public class MyDataBean {
 	
     private String name;
     
-    private int age;
+    private String age;
     
     private String message;
 

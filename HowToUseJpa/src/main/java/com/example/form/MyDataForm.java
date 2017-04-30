@@ -22,7 +22,7 @@ public class MyDataForm {
 	
     private String name;
     
-    private int age;
+    private String age;
     
     private String message;
     

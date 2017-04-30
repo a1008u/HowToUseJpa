@@ -9,6 +9,7 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.bean.MyDataBean;
 import com.example.form.MyDataForm;
-import com.example.service.MyDataService;
+import com.example.service.MyDataService_repository;
 
 
 @Controller
@@ -28,17 +29,19 @@ import com.example.service.MyDataService;
 public class MyDataController {
 	
 	@Autowired
-	MyDataService MyDataService;
+	MyDataService_repository MyDataServiceRepository;
 	
   final static Map<String, String> RADIO_ITEMS =
-		    Collections.unmodifiableMap(new LinkedHashMap<String, String>() {
-		    {
-		      put("create", "create");
-		      put("read", "read");
-		      put("update", "update");
-		      put("delete", "delete");
-		    }
-		  });
+		    Collections.unmodifiableMap(new LinkedHashMap<String, String>() { 
+		    	private static final long serialVersionUID = 1L;
+		    	{
+		    		put("create", "create");
+		    		put("read", "read");
+		    		put("update", "update");
+		    		put("delete", "delete");
+		    	}
+		    	}
+		    );
 	
 	
 	// 1.リクエスト時に必ず呼び出す(Formの初期化)----------------------------
@@ -52,56 +55,85 @@ public class MyDataController {
 	@GetMapping
     ModelAndView MyDataList(MyDataForm MyDataForm, ModelAndView mav) {
 		
-		List<MyDataBean> MyDataList = MyDataService.find_All();
+		MyDataList_top(MyDataForm, mav);
+		return mav;
+		
+	}
+
+	private void MyDataList_top(MyDataForm MyDataForm, ModelAndView mav) {
+		List<MyDataBean> MyDataList = MyDataServiceRepository.find_All();
 		
 		MyDataForm.setMydatalist(MyDataList);
 		mav.addObject("mydataform", MyDataForm);
 		mav.addObject("radioItems", RADIO_ITEMS);
 		
 		mav.setViewName("MyData/MyDataList");
-		return mav;
-		
 	}
 	
-	// 2.ルート---------------------------------------------------------
+	// 3.ルート---------------------------------------------------------
 	@PostMapping(value="operate_form")
 	ModelAndView operate_form(@Validated @ModelAttribute("mydataform")MyDataForm MyDataForm, BindingResult result, ModelAndView mav) {
 		
-		if (result.hasErrors()) return new ModelAndView("redirect:/");
-		
-		MyDataBean MyDataBean = new MyDataBean();
-		BeanUtils.copyProperties(MyDataForm, MyDataBean);
-		
-		/*　TODO : リファクタリング
-		 * sqlの利用
-		 *  
-		 */
-		switch (MyDataForm.getSql()) {
+		if (result.hasErrors()) {
+			
+			MyDataList_top(MyDataForm, mav);
+			
+		} else {
+			
+			/*　TODO : リファクタリング
+			 * sqlの利用
+			 * 1.repository + Criteria API 進捗：60%
+			 * 2.JPQL 進捗：40%
+			 * 3.Criteria API 進捗：0%
+			 *  
+			 */
+			
+			// Set Up
+			List<MyDataBean> MyDataList;
+			MyDataBean MyDataBean = new MyDataBean();
+			BeanUtils.copyProperties(MyDataForm, MyDataBean);
+			
+			switch (MyDataForm.getSql()) {
+			
 			case "create":
 				
-				break;
+				MyDataServiceRepository.create(MyDataBean);
+				return new ModelAndView("redirect:/");
+				
 			case "read":
-				MyDataBean = MyDataService.findByid(MyDataBean);
 				
-				if ("".equals(MyDataBean.getName())) return new ModelAndView("redirect:/");
+				if (!StringUtils.isEmpty(MyDataBean.getId())) {
+					/* -------------入力値で取得------------- */
+					MyDataList = MyDataServiceRepository.find_and_many(MyDataBean);
+					/* -------------入力値で取得------------- */
+				} else {
+					/* -------------PKのみで取得------------- */
+					MyDataBean = MyDataServiceRepository.findByid(MyDataBean);
+					if ("".equals(MyDataBean.getName())) return new ModelAndView("redirect:/");
+					MyDataList = new ArrayList<>();
+					MyDataList.add(MyDataBean);
+					/* -------------PKのみで取得------------- */
+				}
 				
-				List<MyDataBean> MyDataList = new ArrayList<>();
-				MyDataList.add(MyDataBean);
 				MyDataForm.setMydatalist(MyDataList);
 				
 				mav.addObject("mydataform", MyDataForm);
 				break;
+				
 			case "update":
-				MyDataService.update(MyDataBean);
+				MyDataServiceRepository.update(MyDataBean);
 				return new ModelAndView("redirect:/");
 				
 			case "delete":
-				
-				break;
-		};
+				MyDataServiceRepository.delete(MyDataBean);
+				return new ModelAndView("redirect:/");
+			};
 		
-		mav.addObject("radioItems", RADIO_ITEMS);
-		mav.setViewName("MyData/MyDataList");
+			mav.addObject("radioItems", RADIO_ITEMS);
+			mav.setViewName("MyData/MyDataList");
+			
+		}
+		
 		return mav;
 		
 	}
