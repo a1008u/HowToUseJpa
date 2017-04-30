@@ -91,22 +91,10 @@ public class MyDataService_repository {
 	
 	
 	// TODO:要修正
-	// Specificationでの利用でも、不備ありのためQqueryを利用
+	// 現状はor条件の組み合わせで結果を取得しているが、and条件で結果を取得できるように変更する
 	public List<MyDataBean> find_many(MyDataBean MyDataBean) {
 		
 		List<MyData> MyDatalList = SpecificationsMyData.find_many(MyDataBean);
-		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
-		
-		return  MyDataBeanList;
-	}
-	
-	public List<MyDataBean> find_and_many(MyDataBean MyDataBean) {
-
-		String name = MyDataBean.getName();
-		String age = MyDataBean.getAge();
-		String message = MyDataBean.getMessage();
-		
-		List<MyData> MyDatalList = MyDataRepository.find_and_many(name, age, message);
 		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
 		
 		return  MyDataBeanList;

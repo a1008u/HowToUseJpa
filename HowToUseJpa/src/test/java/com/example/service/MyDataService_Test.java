@@ -145,24 +145,6 @@ public class MyDataService_Test {
     	
     }
     
-    @Test
-    public void Test2_4_Find_and_many() throws Exception {
-    	
-    	// Set Up
-    	MyDataBean expected = new MyDataBean();
-		// expected.setId(1);
-	    expected.setName("AAA");
-		// expected.setAge(26);
-		expected.setMessage("今日食べた定食は、お子様ランチセット");
-    	
-    	// execute
-    	List<MyDataBean> actual = MyDataServiceRepository.find_and_many(expected);
-    	
-    	// Verify
-    	assertThat(actual.size(), is(1));
-    	
-    }
-    
     // 【crUd】--------------------------------------------
     @Test
     public void Test3_1_Update() throws Exception {

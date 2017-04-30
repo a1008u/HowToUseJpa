@@ -25,9 +25,9 @@ public class SpecificationsDetail_MyData {
 	public List<MyData> find_many(MyDataBean MyDataBean){
 		
 		return MyDataRepository.findAll(Specifications.where(idContains(MyDataBean.getId()))
-															   .or(nameContains(MyDataBean.getName()))
-															   .or(ageContains(MyDataBean.getAge()))
-															   .or(messageContains(MyDataBean.getMessage())));
+															   .and(nameContains(MyDataBean.getName()))
+															   .and(ageContains(MyDataBean.getAge()))
+															   .and(messageContains(MyDataBean.getMessage())));
 	}
 	
 	private Specification<MyData> idContains(Integer id) {

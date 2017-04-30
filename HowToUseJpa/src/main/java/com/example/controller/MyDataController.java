@@ -104,7 +104,7 @@ public class MyDataController {
 				
 				if (!StringUtils.isEmpty(MyDataBean.getId())) {
 					/* -------------入力値で取得------------- */
-					MyDataList = MyDataServiceRepository.find_and_many(MyDataBean);
+					MyDataList = MyDataServiceRepository.find_many(MyDataBean);
 					/* -------------入力値で取得------------- */
 				} else {
 					/* -------------PKのみで取得------------- */
