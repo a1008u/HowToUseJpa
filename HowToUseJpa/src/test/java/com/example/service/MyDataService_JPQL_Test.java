@@ -6,6 +6,8 @@ import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
+import javax.persistence.NoResultException;
+
 import org.hamcrest.beans.SamePropertyValuesAs;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
@@ -26,7 +28,6 @@ public class MyDataService_JPQL_Test {
 	MyDataService_JPQL MyDataServiceJPQL;
 	
 	// 【Crud】--------------------------------------------
-	/*
 	@Test
 	public void Test1_Create() throws Exception {
 		
@@ -34,7 +35,7 @@ public class MyDataService_JPQL_Test {
 		int id = 4;
 		MyDataBean expected = new MyDataBean();
 		expected.setName("testuser");
-		expected.setAge(20);
+		expected.setAge("20");
 		expected.setMessage("testuserは食べないよ");
     	
     	// execute
@@ -49,7 +50,6 @@ public class MyDataService_JPQL_Test {
     	assertThat(actual, is(SamePropertyValuesAs.samePropertyValuesAs(expected)));
     	
     }
-    */
 	
 	// 【cRud】--------------------------------------------
     @Test
@@ -94,7 +94,6 @@ public class MyDataService_JPQL_Test {
     	
     }
     
-    /*
     // 【crUd】--------------------------------------------
     @Test
     public void Test3_1_Update() throws Exception {
@@ -104,7 +103,7 @@ public class MyDataService_JPQL_Test {
     	MyDataBean.setId(1);
     	MyDataBean expectedMyDataBean = MyDataServiceJPQL.findByid(MyDataBean);
     	expectedMyDataBean.setName("Akira");
-    	expectedMyDataBean.setAge(28);
+    	expectedMyDataBean.setAge("28");
     	expectedMyDataBean.setMessage("今日食べた定食は、ラーメンチャーハン餃子セット");
 		
     	// execute
@@ -118,7 +117,7 @@ public class MyDataService_JPQL_Test {
     	assertThat(actualMyDataBean, is(SamePropertyValuesAs.samePropertyValuesAs(expectedMyDataBean)));
     	
     }
-    */
+
     // 【cruD】--------------------------------------------
     @Test
     public void Test4_1_delete() throws Exception {
@@ -139,22 +138,27 @@ public class MyDataService_JPQL_Test {
     	
     }
     
-    /*
-    @Test
-    public void Test4_2_delete_find() throws Exception {
+    @Test(expected = NoResultException.class)
+    public void Test4_2_delete() throws Exception {
     	
     	// Set Up
+    	
+    	Integer id= 2;
     	MyDataBean MyDataBean = new MyDataBean();
-    	MyDataBean.setId(1);
+    	MyDataBean.setId(id);
+    	MyDataBean = MyDataServiceJPQL.findByid(MyDataBean);
     	MyDataServiceJPQL.delete(MyDataBean);
     	
     	// execute
-    	List<MyDataBean> actual = MyDataServiceJPQL.find_All();
+    	MyDataBean actual = new MyDataBean();
+    	actual.setId(id);
+    	
+    	// ここでentityを取得ができない為、エラーとなる
+    	actual = MyDataServiceJPQL.findByid(actual);
     	
     	// Verify
-    	assertThat(actual.size(), is(3));
+    	assertThat(actual, is(nullValue()));
     	
     }
-    */
 
 }

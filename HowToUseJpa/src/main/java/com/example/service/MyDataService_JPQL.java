@@ -30,19 +30,36 @@ public class MyDataService_JPQL {
 	}
 	
 	// 【Crud】--------------------------------------------
-	/*
+	/**
+	 * 新規作成
+	 * @param MyDataBean Veiw上のデータ
+	 * 
+	 */
 	public void create(MyDataBean MyDataBean) {
 		
 		MyData MyData = new MyData();
 		BeanUtils.copyProperties(MyDataBean, MyData);
-		MyDataRepositoryJPQL.saveAndFlush(MyData);
+		MyDataRepositoryJPQL.crate(MyData);
 	}
-	*/
 	
 	
 	// 【cRud】--------------------------------------------
 	/**
-	 * 動的に検索条件を変更し、検索を実行する。
+	 * 検索(id利用)
+	 * @param MyDataBean Veiw上のデータ
+	 * @return MyDataBean Veiwに表示する検索結果
+	 * 
+	 */
+	public MyDataBean findByid(MyDataBean MyDataBean) {
+		
+		MyData MyData = MyDataRepositoryJPQL.findByid(MyDataBean);
+		BeanUtils.copyProperties(MyData, MyDataBean);
+		
+		return MyDataBean;
+	}
+	
+	/**
+	 * 検索(動的に検索条件を設定)
 	 * @param MyDataBean Veiw上のデータ
 	 * @return MyDataBeanList Veiwに表示する検索結果
 	 * 
@@ -69,23 +86,30 @@ public class MyDataService_JPQL {
 	}
 		
 	// 【crUd】--------------------------------------------
-	/*
+	/**
+	 * 更新(id利用)
+	 * @param MyDataBean Veiw上のデータ
+	 * 
+	 */
 	public void update(MyDataBean MyDataBean) {
 	
-		MyData MyData = MyDataRepositoryJPQL.findByid(MyDataBean.getId());
-		if (MyData != null) {
+		MyData MyData = MyDataRepositoryJPQL.findByid(MyDataBean);
+		if (MyData.getId() != null) {
 			BeanUtils.copyProperties(MyDataBean, MyData);
-			MyDataRepositoryJPQL.saveAndFlush(MyData);
+			MyDataRepositoryJPQL.update(MyData);
 		}
 	}
-	*/
 	
 	// 【cruD】--------------------------------------------
+	/**
+	 * 削除
+	 * @param MyDataBean Veiw上のデータ(PKとPK以外で挙動が変わるよ)
+	 * 
+	 */
 	public void delete(MyDataBean MyDataBean) {
 		
-		// TODO: PKで取得したMyDataBeanを削除する方法に修正する
 		List<MyData> MyDatalList = MyDataRepositoryJPQL.find_many(MyDataBean);
-		if (MyDatalList != null) {
+		if (MyDatalList.size() != 0) {
 			for (MyData MyData: MyDatalList) {
 				MyDataRepositoryJPQL.delete(MyData);
 			}	

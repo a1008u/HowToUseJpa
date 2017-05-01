@@ -28,10 +28,22 @@
             <fieldset>
                 <legend>MyData</legend>
                 
-                <div class="form-group" th:classappend="${#fields.hasErrors('id')}? 'has-error has-feedback'">
+                <div class="form-group" th:classappend="${#fields.hasErrors('jpa')}? 'has-error has-feedback'">
                     <div class="col-xs-12 col-sm-6 col-md-9">
-				        <label for="id" class="control-label"><abbr title="required">*</abbr>SQL</label>
-				        <div class="sql" th:each="item : ${radioItems}">
+				        <label for="jpa" class="control-label"><abbr title="required">*</abbr>JPA</label>
+				        <div class="jpa" th:each="item : ${radioItems_jpa}">
+					        <label>
+					        	<input type="radio" name="jpa" th:value="${item.value}" th:text="${item.key}" th:field="*{jpa}">
+					        </label>
+			        	</div>
+			        	<span th:if="${#fields.hasErrors('jpa')}" th:errors="*{jpa}" class="help-block">error!</span>
+                    </div>
+                </div>
+                
+                <div class="form-group" th:classappend="${#fields.hasErrors('sql')}? 'has-error has-feedback'">
+                    <div class="col-xs-12 col-sm-6 col-md-9">
+				        <label for="sql" class="control-label"><abbr title="required">*</abbr>SQL</label>
+				        <div class="sql" th:each="item : ${radioItems_sql}">
 					        <label>
 					        	<input type="radio" name="sql" th:value="${item.value}" th:text="${item.key}" th:field="*{sql}">
 					        </label>
@@ -39,7 +51,6 @@
 			        	<span th:if="${#fields.hasErrors('sql')}" th:errors="*{sql}" class="help-block">error!</span>
                     </div>
                 </div>
-                
                 
                <div class="form-group" th:classappend="${#fields.hasErrors('id')}? 'has-error has-feedback'">
                     <label for="id" class="col-xs-12 col-sm-6 col-md-3 control-label">id</label>

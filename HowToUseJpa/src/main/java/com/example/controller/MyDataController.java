@@ -21,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.bean.MyDataBean;
 import com.example.form.MyDataForm;
+import com.example.service.MyDataService_JPQL;
 import com.example.service.MyDataService_repository;
 
 
@@ -31,17 +32,29 @@ public class MyDataController {
 	@Autowired
 	MyDataService_repository MyDataServiceRepository;
 	
-  final static Map<String, String> RADIO_ITEMS =
-		    Collections.unmodifiableMap(new LinkedHashMap<String, String>() { 
-		    	private static final long serialVersionUID = 1L;
-		    	{
-		    		put("create", "create");
-		    		put("read", "read");
-		    		put("update", "update");
-		    		put("delete", "delete");
-		    	}
-		    	}
-		    );
+	@Autowired
+	MyDataService_JPQL MyDataServiceJPQL;
+	
+	final static Map<String, String> RADIO_ITEMS_sql =
+			Collections.unmodifiableMap(new LinkedHashMap<String, String>() {
+				private static final long serialVersionUID = 1L;{
+					put("create", "create");
+					put("read", "read");
+					put("update", "update");
+					put("delete", "delete");
+				}
+			}
+	);
+	
+	final static Map<String, String> RADIO_ITEMS_jpa =
+			Collections.unmodifiableMap(new LinkedHashMap<String, String>() {
+				private static final long serialVersionUID = 1L;{
+					put("Repository", "Repository");
+					put("JPQL", "JPQL");
+					put("Criteria API", "Criteria API");
+				}
+			}
+	);
 	
 	
 	// 1.リクエスト時に必ず呼び出す(Formの初期化)----------------------------
@@ -65,8 +78,8 @@ public class MyDataController {
 		
 		MyDataForm.setMydatalist(MyDataList);
 		mav.addObject("mydataform", MyDataForm);
-		mav.addObject("radioItems", RADIO_ITEMS);
-		
+		mav.addObject("radioItems_sql", RADIO_ITEMS_sql);
+		mav.addObject("radioItems_jpa", RADIO_ITEMS_jpa);
 		mav.setViewName("MyData/MyDataList");
 	}
 	
@@ -80,7 +93,9 @@ public class MyDataController {
 			
 		} else {
 			
-			/*　TODO : リファクタリング
+			//　TODO：相関チェック
+			
+			/*　TODO : リファクタリング(Strategyパターン)
 			 * sqlの利用
 			 * 1.repository + Criteria API 進捗：60%
 			 * 2.JPQL 進捗：40%
@@ -93,45 +108,68 @@ public class MyDataController {
 			MyDataBean MyDataBean = new MyDataBean();
 			BeanUtils.copyProperties(MyDataForm, MyDataBean);
 			
-			switch (MyDataForm.getSql()) {
+			switch (MyDataForm.getJpa()) {
 			
-			case "create":
+			case "Repository":
+				switch (MyDataForm.getSql()) {
 				
-				MyDataServiceRepository.create(MyDataBean);
-				return new ModelAndView("redirect:/");
-				
-			case "read":
-				
-				if (!StringUtils.isEmpty(MyDataBean.getId())) {
-					/* -------------入力値で取得------------- */
+				case "create":
+					
+					MyDataServiceRepository.create(MyDataBean);
+					return new ModelAndView("redirect:/");
+					
+				case "read":
+					
 					MyDataList = MyDataServiceRepository.find_many(MyDataBean);
-					/* -------------入力値で取得------------- */
-				} else {
-					/* -------------PKのみで取得------------- */
-					MyDataBean = MyDataServiceRepository.findByid(MyDataBean);
-					if ("".equals(MyDataBean.getName())) return new ModelAndView("redirect:/");
-					MyDataList = new ArrayList<>();
-					MyDataList.add(MyDataBean);
-					/* -------------PKのみで取得------------- */
-				}
-				
-				MyDataForm.setMydatalist(MyDataList);
-				
-				mav.addObject("mydataform", MyDataForm);
+					MyDataForm.setMydatalist(MyDataList);
+					mav.addObject("mydataform", MyDataForm);
+					break;
+					
+				case "update":
+					MyDataServiceRepository.update(MyDataBean);
+					return new ModelAndView("redirect:/");
+					
+				case "delete":
+					MyDataServiceRepository.delete(MyDataBean);
+					return new ModelAndView("redirect:/");
+				};
+
 				break;
 				
-			case "update":
-				MyDataServiceRepository.update(MyDataBean);
-				return new ModelAndView("redirect:/");
+			case "JPQL":
+				switch (MyDataForm.getSql()) {
 				
-			case "delete":
-				MyDataServiceRepository.delete(MyDataBean);
-				return new ModelAndView("redirect:/");
-			};
-		
-			mav.addObject("radioItems", RADIO_ITEMS);
-			mav.setViewName("MyData/MyDataList");
+				case "create":
+					
+					MyDataServiceJPQL.create(MyDataBean);
+					return new ModelAndView("redirect:/");
+					
+				case "read":
+					
+					MyDataList = MyDataServiceJPQL.find_many(MyDataBean);
+					MyDataForm.setMydatalist(MyDataList);
+					mav.addObject("mydataform", MyDataForm);
+					break;
+					
+				case "update":
+					MyDataServiceJPQL.update(MyDataBean);
+					return new ModelAndView("redirect:/");
+					
+				case "delete":
+					MyDataServiceJPQL.delete(MyDataBean);
+					return new ModelAndView("redirect:/");
+				};
+				break;
 			
+			case "Criteria API":
+				break;
+			
+			}
+			
+			mav.addObject("radioItems_sql", RADIO_ITEMS_sql);
+			mav.addObject("radioItems_jpa", RADIO_ITEMS_jpa);
+			mav.setViewName("MyData/MyDataList");
+
 		}
 		
 		return mav;

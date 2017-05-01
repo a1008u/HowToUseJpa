@@ -30,6 +30,10 @@ public class MyDataForm {
     List<MyDataBean> mydatalist;
     
     @NotNull
+    @Pattern(regexp = "Repository|JPQL|Criteria API")
+    private String jpa;
+    
+    @NotNull
     @Pattern(regexp = "create|read|update|delete")
     private String sql;
     

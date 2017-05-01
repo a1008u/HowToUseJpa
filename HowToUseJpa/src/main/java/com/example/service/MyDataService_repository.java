@@ -26,6 +26,11 @@ public class MyDataService_repository {
 	SpecificationsDetail_MyData SpecificationsMyData;
 	
 	// 【Crud】--------------------------------------------
+	/**
+	 * 新規作成
+	 * @param MyDataBean Veiw上のデータ
+	 * 
+	 */
 	public void create(MyDataBean MyDataBean) {
 		
 		MyData MyData = new MyData();
@@ -35,6 +40,12 @@ public class MyDataService_repository {
 	
 	
 	// 【cRud】--------------------------------------------
+	/**
+	 * 検索(id利用)
+	 * @param MyDataBean Veiw上のデータ
+	 * @return MyDataBean Veiwに表示する検索結果
+	 * 
+	 */
 	public MyDataBean findByid(MyDataBean MyDataBean) {
 		
 		MyData MyData = MyDataRepository.findByid(MyDataBean.getId());
@@ -80,7 +91,12 @@ public class MyDataService_repository {
 		return MyDataBean;
 	}
 	// 利用しない-----------------------------------------------------------------
-	
+	/**
+	 * 検索(全件抽出)
+	 * @param MyDataBean Veiw上のデータ
+	 * @return MyDataBeanList Veiwに表示する検索結果
+	 * 
+	 */
 	public  List<MyDataBean> find_All() {
 		
 		List<MyData> MyDatalList = MyDataRepository.findAll();
@@ -89,9 +105,12 @@ public class MyDataService_repository {
         return  MyDataBeanList;
 	}
 	
-	
-	// TODO:要修正
-	// 現状はor条件の組み合わせで結果を取得しているが、and条件で結果を取得できるように変更する
+	/**
+	 * 検索(動的に検索条件を設定)
+	 * @param MyDataBean Veiw上のデータ
+	 * @return MyDataBeanList Veiwに表示する検索結果
+	 * 
+	 */
 	public List<MyDataBean> find_many(MyDataBean MyDataBean) {
 		
 		List<MyData> MyDatalList = SpecificationsMyData.find_many(MyDataBean);
