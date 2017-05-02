@@ -1,6 +1,5 @@
 package com.example.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +16,7 @@ import com.example.repository.MyDataRepository_JPQL;
 
 @Service
 @Transactional
-public class MyDataService_JPQL {
+public class MyDataService_JPQL extends MyDataService{
 	
 	MyDataRepository_JPQL MyDataRepositoryJPQL;
 	
@@ -35,11 +34,12 @@ public class MyDataService_JPQL {
 	 * @param MyDataBean Veiw上のデータ
 	 * 
 	 */
+	@Override
 	public void create(MyDataBean MyDataBean) {
 		
 		MyData MyData = new MyData();
 		BeanUtils.copyProperties(MyDataBean, MyData);
-		MyDataRepositoryJPQL.crate(MyData);
+		MyDataRepositoryJPQL.create(MyData);
 	}
 	
 	
@@ -50,6 +50,7 @@ public class MyDataService_JPQL {
 	 * @return MyDataBean Veiwに表示する検索結果
 	 * 
 	 */
+	@Override
 	public MyDataBean findByid(MyDataBean MyDataBean) {
 		
 		MyData MyData = MyDataRepositoryJPQL.findByid(MyDataBean);
@@ -59,11 +60,27 @@ public class MyDataService_JPQL {
 	}
 	
 	/**
+	 * 全件検索
+	 * @param MyDataBean Veiw上のデータ
+	 * @return MyDataBean Veiwに表示する検索結果
+	 * 
+	 */
+	@Override
+	public List<MyDataBean> find_All() {
+		
+		List<MyData> MyDatalList = MyDataRepositoryJPQL.find_All();
+		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
+		
+		return MyDataBeanList;
+	}
+	
+	/**
 	 * 検索(動的に検索条件を設定)
 	 * @param MyDataBean Veiw上のデータ
 	 * @return MyDataBeanList Veiwに表示する検索結果
 	 * 
 	 */
+	@Override
 	public List<MyDataBean> find_many(MyDataBean MyDataBean) {
 		
 		List<MyData> MyDatalList = MyDataRepositoryJPQL.find_many(MyDataBean);
@@ -72,18 +89,7 @@ public class MyDataService_JPQL {
 		return  MyDataBeanList;
 	}
 	
-	private List<MyDataBean> from_MyDatalList_To_MyDataBean(List<MyData> MyDatalList){
 
-		List<MyDataBean> MyDataBeanList =  new ArrayList<>();
-		MyDatalList.stream()
-				   .forEach(MyData -> {
-					   MyDataBean MyDataBean = new MyDataBean();
-					   BeanUtils.copyProperties(MyData, MyDataBean);
-					   MyDataBeanList.add(MyDataBean);
-					});
-		return MyDataBeanList;
-
-	}
 		
 	// 【crUd】--------------------------------------------
 	/**
@@ -91,6 +97,7 @@ public class MyDataService_JPQL {
 	 * @param MyDataBean Veiw上のデータ
 	 * 
 	 */
+	@Override
 	public void update(MyDataBean MyDataBean) {
 	
 		MyData MyData = MyDataRepositoryJPQL.findByid(MyDataBean);
@@ -106,6 +113,7 @@ public class MyDataService_JPQL {
 	 * @param MyDataBean Veiw上のデータ(PKとPK以外で挙動が変わるよ)
 	 * 
 	 */
+	@Override
 	public void delete(MyDataBean MyDataBean) {
 		
 		List<MyData> MyDatalList = MyDataRepositoryJPQL.find_many(MyDataBean);

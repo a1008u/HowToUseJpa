@@ -26,7 +26,7 @@ public class MyDataRepository_JPQL{
 	}
 
 	// 【Crud】--------------------------------------------
-	public void crate(MyData myData) {		
+	public void create(MyData myData) {		
 		
 		entityManager.persist(myData);
 		
@@ -41,6 +41,18 @@ public class MyDataRepository_JPQL{
 		
 		MyData MyData = (MyData) query.getSingleResult();
 		return MyData;
+	}
+	
+	public List<MyData> find_All() {
+		
+		String qstr = "from MyData";
+		
+		Query query = entityManager.createQuery(qstr);
+		
+		@SuppressWarnings("unchecked")
+		List<MyData> MyDataList = query.getResultList();
+		
+		return MyDataList;
 	}
 	
 	

@@ -1,11 +1,9 @@
 package com.example.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.junit.Ignore;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +15,7 @@ import com.example.repository.SpecificationsDetail_MyData;
 
 @Service
 @Transactional
-public class MyDataService_repository {
+public class MyDataService_repository extends MyDataService {
 	
 	@Autowired
 	MyDataRepository MyDataRepository;
@@ -31,6 +29,7 @@ public class MyDataService_repository {
 	 * @param MyDataBean Veiw上のデータ
 	 * 
 	 */
+	@Override
 	public void create(MyDataBean MyDataBean) {
 		
 		MyData MyData = new MyData();
@@ -46,6 +45,7 @@ public class MyDataService_repository {
 	 * @return MyDataBean Veiwに表示する検索結果
 	 * 
 	 */
+	@Override
 	public MyDataBean findByid(MyDataBean MyDataBean) {
 		
 		MyData MyData = MyDataRepository.findByid(MyDataBean.getId());
@@ -97,6 +97,7 @@ public class MyDataService_repository {
 	 * @return MyDataBeanList Veiwに表示する検索結果
 	 * 
 	 */
+	@Override
 	public  List<MyDataBean> find_All() {
 		
 		List<MyData> MyDatalList = MyDataRepository.findAll();
@@ -111,6 +112,7 @@ public class MyDataService_repository {
 	 * @return MyDataBeanList Veiwに表示する検索結果
 	 * 
 	 */
+	@Override
 	public List<MyDataBean> find_many(MyDataBean MyDataBean) {
 		
 		List<MyData> MyDatalList = SpecificationsMyData.find_many(MyDataBean);
@@ -118,21 +120,9 @@ public class MyDataService_repository {
 		
 		return  MyDataBeanList;
 	}
-	
-	private List<MyDataBean> from_MyDatalList_To_MyDataBean(List<MyData> MyDatalList){
-
-		List<MyDataBean> MyDataBeanList =  new ArrayList<>();
-		MyDatalList.stream()
-				   .forEach(MyData -> {
-					   MyDataBean MyDataBean = new MyDataBean();
-					   BeanUtils.copyProperties(MyData, MyDataBean);
-					   MyDataBeanList.add(MyDataBean);
-					});
-		return MyDataBeanList;
-
-	}
 		
 	// 【crUd】--------------------------------------------
+	@Override
 	public void update(MyDataBean MyDataBean) {
 	
 		// TODO:MyDataを取得するバリエーションを増やす必要がある
@@ -144,6 +134,7 @@ public class MyDataService_repository {
 		}
 	}
 	// 【cruD】--------------------------------------------
+	@Override
 	public void delete(MyDataBean MyDataBean) {
 		
 		// TODO:MyDataを取得するバリエーションを増やす必要がある

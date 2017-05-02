@@ -1,6 +1,5 @@
 package com.example.controller;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,19 +19,17 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.bean.MyDataBean;
 import com.example.form.MyDataForm;
-import com.example.service.MyDataService_JPQL;
-import com.example.service.MyDataService_repository;
-
+import com.example.service.MyDataService;
+import com.example.service.MyDataService_Factory;
 
 @Controller
 @RequestMapping(value = "/", method = RequestMethod.GET)
 public class MyDataController {
 	
-	@Autowired
-	MyDataService_repository MyDataServiceRepository;
+	MyDataService MyDataService;
 	
 	@Autowired
-	MyDataService_JPQL MyDataServiceJPQL;
+	MyDataService_Factory MyDataService_Factory;
 	
 	final static Map<String, String> RADIO_ITEMS_sql =
 			Collections.unmodifiableMap(new LinkedHashMap<String, String>() {
@@ -74,7 +70,8 @@ public class MyDataController {
 	}
 
 	private void MyDataList_top(MyDataForm MyDataForm, ModelAndView mav) {
-		List<MyDataBean> MyDataList = MyDataServiceRepository.find_All();
+		MyDataService MyDataService = MyDataService_Factory.create(MyDataForm);
+		List<MyDataBean> MyDataList = MyDataService.find_All();
 		
 		MyDataForm.setMydatalist(MyDataList);
 		mav.addObject("mydataform", MyDataForm);
@@ -97,83 +94,45 @@ public class MyDataController {
 			
 			/*　TODO : リファクタリング(Strategyパターン)
 			 * sqlの利用
-			 * 1.repository + Criteria API 進捗：60%
-			 * 2.JPQL 進捗：40%
-			 * 3.Criteria API 進捗：0%
-			 *  
+			 * 1.repository + Criteria API 進捗：65%
+			 * 2.JPQL 進捗：65%
+			 * 3.Criteria API 進捗：65%
 			 */
 			
 			// Set Up
 			List<MyDataBean> MyDataList;
+			MyDataService MyDataService = MyDataService_Factory.create(MyDataForm);
 			MyDataBean MyDataBean = new MyDataBean();
 			BeanUtils.copyProperties(MyDataForm, MyDataBean);
 			
-			switch (MyDataForm.getJpa()) {
+			switch (MyDataForm.getSql()) {
 			
-			case "Repository":
-				switch (MyDataForm.getSql()) {
+			case "create":
 				
-				case "create":
-					
-					MyDataServiceRepository.create(MyDataBean);
-					return new ModelAndView("redirect:/");
-					
-				case "read":
-					
-					MyDataList = MyDataServiceRepository.find_many(MyDataBean);
-					MyDataForm.setMydatalist(MyDataList);
-					mav.addObject("mydataform", MyDataForm);
-					break;
-					
-				case "update":
-					MyDataServiceRepository.update(MyDataBean);
-					return new ModelAndView("redirect:/");
-					
-				case "delete":
-					MyDataServiceRepository.delete(MyDataBean);
-					return new ModelAndView("redirect:/");
-				};
-
+				MyDataService.create(MyDataBean);
+				return new ModelAndView("redirect:/");
+				
+			case "read":
+				
+				MyDataList = MyDataService.find_many(MyDataBean);
+				MyDataForm.setMydatalist(MyDataList);
+				mav.addObject("mydataform", MyDataForm);
+				mav.addObject("radioItems_sql", RADIO_ITEMS_sql);
+				mav.addObject("radioItems_jpa", RADIO_ITEMS_jpa);
+				mav.setViewName("MyData/MyDataList");
 				break;
 				
-			case "JPQL":
-				switch (MyDataForm.getSql()) {
+			case "update":
+				MyDataService.update(MyDataBean);
+				return new ModelAndView("redirect:/");
 				
-				case "create":
-					
-					MyDataServiceJPQL.create(MyDataBean);
-					return new ModelAndView("redirect:/");
-					
-				case "read":
-					
-					MyDataList = MyDataServiceJPQL.find_many(MyDataBean);
-					MyDataForm.setMydatalist(MyDataList);
-					mav.addObject("mydataform", MyDataForm);
-					break;
-					
-				case "update":
-					MyDataServiceJPQL.update(MyDataBean);
-					return new ModelAndView("redirect:/");
-					
-				case "delete":
-					MyDataServiceJPQL.delete(MyDataBean);
-					return new ModelAndView("redirect:/");
-				};
-				break;
-			
-			case "Criteria API":
-				break;
-			
-			}
-			
-			mav.addObject("radioItems_sql", RADIO_ITEMS_sql);
-			mav.addObject("radioItems_jpa", RADIO_ITEMS_jpa);
-			mav.setViewName("MyData/MyDataList");
-
+			case "delete":
+				MyDataService.delete(MyDataBean);
+				return new ModelAndView("redirect:/");
+			};
 		}
 		
 		return mav;
 		
-	}
-	
+	}	
 }
