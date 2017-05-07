@@ -1,3 +1,12 @@
 INSERT INTO MyData(Name, Age, Message) VALUES('Akira', '28', '今日食べた定食は、ラーメンチャーハン餃子セット');
 INSERT INTO MyData(Name, Age, Message) VALUES('BBB', '26', '今日食べた定食は、ステーキセット');
-INSERT INTO MyData(Name, Age, Message) VALUES('AAA', '26', '今日食べた定食は、お子様ランチセット');
+INSERT INTO MyData(Name, Age, Message) VALUES('AAA', '23', '今日食べた定食は、お子様ランチセット');
+INSERT INTO MyData(Name, Age, Message) VALUES('CCC', '24', '今日食べた定食は、ラーメンチャーハン餃子セット');
+INSERT INTO MyData(Name, Age, Message) VALUES('SSS', '25', '今日食べた定食は、ステーキセット');
+INSERT INTO MyData(Name, Age, Message) VALUES('DDD', '26', '今日食べた定食は、お子様ランチセット');
+INSERT INTO MyData(Name, Age, Message) VALUES('EEE', '27', '今日食べた定食は、ラーメンチャーハン餃子セット');
+INSERT INTO MyData(Name, Age, Message) VALUES('FFF', '28', '今日食べた定食は、ステーキセット');
+INSERT INTO MyData(Name, Age, Message) VALUES('GGG', '29', '今日食べた定食は、お子様ランチセット');
+INSERT INTO MyData(Name, Age, Message) VALUES('ZZZ', '27', '今日食べた定食は、ラーメンチャーハン餃子セット');
+INSERT INTO MyData(Name, Age, Message) VALUES('LLL', '25', '今日食べた定食は、ステーキセット');
+INSERT INTO MyData(Name, Age, Message) VALUES('JJJ', '23', '今日食べた定食は、お子様ランチセット');

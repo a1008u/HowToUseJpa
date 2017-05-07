@@ -64,21 +64,26 @@ public class MyDataController {
 	@GetMapping
     ModelAndView MyDataList(MyDataForm MyDataForm, ModelAndView mav) {
 		
-		MyDataList_top(MyDataForm, mav);
+		create_MyDataList(MyDataForm);
+		mav_create_to_top(MyDataForm, mav);
 		return mav;
 		
 	}
 
-	private void MyDataList_top(MyDataForm MyDataForm, ModelAndView mav) {
+	private void create_MyDataList(MyDataForm MyDataForm) {
 		MyDataService MyDataService = MyDataService_Factory.create(MyDataForm);
 		List<MyDataBean> MyDataList = MyDataService.find_All();
 		
 		MyDataForm.setMydatalist(MyDataList);
+	}
+	
+	private void mav_create_to_top(MyDataForm MyDataForm, ModelAndView mav) {
 		mav.addObject("mydataform", MyDataForm);
 		mav.addObject("radioItems_sql", RADIO_ITEMS_sql);
 		mav.addObject("radioItems_jpa", RADIO_ITEMS_jpa);
 		mav.setViewName("MyData/MyDataList");
 	}
+	
 	
 	// 3.ルート---------------------------------------------------------
 	@PostMapping(value="operate_form")
@@ -86,13 +91,14 @@ public class MyDataController {
 		
 		if (result.hasErrors()) {
 			
-			MyDataList_top(MyDataForm, mav);
+			create_MyDataList(MyDataForm);
+			mav_create_to_top(MyDataForm, mav);
 			
 		} else {
 			
 			//　TODO：相関チェック
 			
-			/*　TODO : リファクタリング(Strategyパターン)
+			/*　TODO : リファクタリング(Factoryパターン+Strategyパターン+Stateパターンに変更)
 			 * sqlの利用
 			 * 1.repository + Criteria API 進捗：65%
 			 * 2.JPQL 進捗：65%
@@ -100,12 +106,12 @@ public class MyDataController {
 			 */
 			
 			// Set Up
-			List<MyDataBean> MyDataList;
 			MyDataService MyDataService = MyDataService_Factory.create(MyDataForm);
 			MyDataBean MyDataBean = new MyDataBean();
 			BeanUtils.copyProperties(MyDataForm, MyDataBean);
+			String SQL = MyDataForm.getSql();
 			
-			switch (MyDataForm.getSql()) {
+			switch (SQL) {
 			
 			case "create":
 				
@@ -114,12 +120,9 @@ public class MyDataController {
 				
 			case "read":
 				
-				MyDataList = MyDataService.find_many(MyDataBean);
+				List<MyDataBean> MyDataList = MyDataService.find_many(MyDataBean);
 				MyDataForm.setMydatalist(MyDataList);
-				mav.addObject("mydataform", MyDataForm);
-				mav.addObject("radioItems_sql", RADIO_ITEMS_sql);
-				mav.addObject("radioItems_jpa", RADIO_ITEMS_jpa);
-				mav.setViewName("MyData/MyDataList");
+				mav_create_to_top(MyDataForm, mav);
 				break;
 				
 			case "update":

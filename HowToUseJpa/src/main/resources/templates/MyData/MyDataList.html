@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="http://necolas.github.io/normalize.css/5.0.0/normalize.css" 
           th:href="@{/webjars/normalize.css/5.0.0/normalize.css}"/>  
     <link href="/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>   
-    <link href="/css/html_ListProfile.css" th:href="@{/css/html_ListProfile.css}" rel="stylesheet"/>   
+    <link href="/css/MyDataList.css" th:href="@{/css/MyDataList.css}" rel="stylesheet"/>   
 </head>
 <body>
 <div class="">
@@ -23,80 +23,93 @@
     
     <!-- ==============Contents============== -->
     <!-- ||||||||||||||Contents①|||||||||||| -->
-    <section class="container">
-            <form th:action="@{/operate_form}" th:object="${mydataform}" class="form-horizontal" method="post">
-            <fieldset>
-                <legend>MyData</legend>
-                
-                <div class="form-group" th:classappend="${#fields.hasErrors('jpa')}? 'has-error has-feedback'">
-                    <div class="col-xs-12 col-sm-6 col-md-9">
+    <div > 
+    <article class="row">  
+    <nav class="navbar navbar-inverse bg-info  col-xs-12 col-sm-6 col-md-6">
+        <form th:action="@{/operate_form}" th:object="${mydataform}" class="form-horizontal" method="post">
+                 
+                <h2>MyData</h2>    
+
+                <section class="form-group row justify-content-center" th:classappend="${#fields.hasErrors('jpa')}? 'has-error has-feedback'">
+                    <div class="col-xs-11 col-sm-9 col-md-9">
 				        <label for="jpa" class="control-label"><abbr title="required">*</abbr>JPA</label>
-				        <div class="jpa" th:each="item : ${radioItems_jpa}">
-					        <label>
-					        	<input type="radio" name="jpa" th:value="${item.value}" th:text="${item.key}" th:field="*{jpa}">
-					        </label>
-			        	</div>
-			        	<span th:if="${#fields.hasErrors('jpa')}" th:errors="*{jpa}" class="help-block">error!</span>
+				        <div class="row">
+                            <div class="jpa col-xs-12 col-sm-4 col-md-4" >
+                            	<div class="btn-group" data-toggle="buttons">
+	                                <label id="JPA" class="btn btn-primary" th:each="item : ${radioItems_jpa}" >
+	                                	<input type="radio" class="" name="jpa" autocomplete="off" th:value="${item.value}" th:text="${item.key}" th:field="*{jpa}">
+	                                </label>
+                                </div>
+                            </div>
+                        </div>
+                        <span th:if="${#fields.hasErrors('jpa')}" th:errors="*{jpa}" th:errorclass="err">error!</span>
                     </div>
-                </div>
+                </section>
                 
-                <div class="form-group" th:classappend="${#fields.hasErrors('sql')}? 'has-error has-feedback'">
-                    <div class="col-xs-12 col-sm-6 col-md-9">
+                <div class="form-group row justify-content-center" th:classappend="${#fields.hasErrors('sql')}? 'has-error has-feedback'">
+                    <div class="col-xs-11 col-sm-9 col-md-9">
 				        <label for="sql" class="control-label"><abbr title="required">*</abbr>SQL</label>
-				        <div class="sql" th:each="item : ${radioItems_sql}">
-					        <label>
-					        	<input type="radio" name="sql" th:value="${item.value}" th:text="${item.key}" th:field="*{sql}">
-					        </label>
-			        	</div>
-			        	<span th:if="${#fields.hasErrors('sql')}" th:errors="*{sql}" class="help-block">error!</span>
+				        <div class="row">
+                            <select class="sql col-12" name="sql">                  
+                            	<option th:each="item : ${radioItems_sql}" th:value="${item.value}" th:text="${item.key}" th:selected="${item.value} == *{sql}"></option>
+                            </select>
+                        </div>
+			        	<span th:if="${#fields.hasErrors('sql')}" th:errors="*{sql}" th:errorclass="err">error!</span>
                     </div>
                 </div>
                 
-               <div class="form-group" th:classappend="${#fields.hasErrors('id')}? 'has-error has-feedback'">
-                    <label for="id" class="col-xs-12 col-sm-6 col-md-3 control-label">id</label>
-                    <div class="col-xs-12 col-sm-6 col-md-9">
-                        <input type="text" id="id" name="id" th:field="*{id}" class="form-control" value="テニス"/>
-                        <div th:if="${#fields.hasErrors('id')}" th:errors="*{id}" th:errorclass="err"></div>
+               <div class="form-group row justify-content-center" th:classappend="${#fields.hasErrors('id')}? 'has-error has-feedback'">
+                    <div class="col-xs-11 col-sm-9 col-md-9">
+                        <label for="id" class="control-label">id</label>
+                        <div class="row">
+                            <input type="text" id="id" name="id" th:field="*{id}" class="form-control" value="テニス"/>
+                            <div th:if="${#fields.hasErrors('id')}" th:errors="*{id}" th:errorclass="err"></div>
+                        </div>
                     </div>
                 </div>
                          
-                <div class="form-group" th:classappend="${#fields.hasErrors('name')}? 'has-error has-feedback'">
-                    <label for="name" class="col-xs-12 col-sm-6 col-md-3 control-label">Name</label>
-                    <div class="col-xs-12 col-sm-6 col-md-9">
-                        <input type="text" id="name" name="name" th:field="*{name}" class="form-control" th:value="*{name}" />
-                        <div th:if="${#fields.hasErrors('Name')}" th:errors="*{name}" th:errorclass="err"></div>
+                <div class="form-group row justify-content-center" th:classappend="${#fields.hasErrors('name')}? 'has-error has-feedback'">
+                    <div class="col-xs-11 col-sm-9 col-md-9">
+                        <label for="name" class="control-label">Name</label>
+                        <div class="row">
+                            <input type="text" id="name" name="name" th:field="*{name}" class="form-control" th:value="*{name}" />
+                            <div th:if="${#fields.hasErrors('Name')}" th:errors="*{name}" th:errorclass="err"></div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="form-group" th:classappend="${#fields.hasErrors('age')}? 'has-error has-feedback'">
-                    <label for="age" class="col-xs-12 col-sm-6 col-md-3  control-label">Age</label>
-                    <div class="col-xs-12 col-sm-6 col-md-9">
-                        <input type="text" id="age" name="age" th:field="*{age}" class="form-control" value="30"/>
-                        <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" th:errorclass="err"></div>
+                <div class="form-group row justify-content-center" th:classappend="${#fields.hasErrors('age')}? 'has-error has-feedback'">
+                    <div class="col-xs-11 col-sm-9 col-md-9">
+                        <label for="age" class="control-label">Age</label>
+                        <div class="row">
+                            <input type="text" id="age" name="age" th:field="*{age}" class="form-control" value="30"/>
+                            <div th:if="${#fields.hasErrors('age')}" th:errors="*{age}" th:errorclass="err"></div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="form-group" th:classappend="${#fields.hasErrors('message')}? 'has-error has-feedback'">
-                    <label for="message" class="col-xs-12 col-sm-6 col-md-3  control-label">Message</label>
-                    <div class="col-xs-12 col-sm-6 col-md-9">
-                        <input type="text" id="message" name="message" th:field="*{message}" class="form-control" value="SE1"/>
-                        <div th:if="${#fields.hasErrors('message')}" th:errors="*{message}" th:errorclass="err"></div>
+                <div class="form-group row justify-content-center" th:classappend="${#fields.hasErrors('message')}? 'has-error has-feedback'">
+
+                    <div class="col-xs-11 col-sm-9 col-md-9">
+                        <label for="message" class="control-label">Message</label>
+                        <div class="row">
+                            <input type="text" id="message" name="message" th:field="*{message}" class="form-control" value="SE1"/>
+                            <div th:if="${#fields.hasErrors('message')}" th:errors="*{message}" th:errorclass="err"></div>
+                       </div>
                     </div>
                 </div>            
                 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-primary">submit</button>
+                        <button type="submit" class="btn btn-success">submit</button>
                     </div>
                 </div>
                 
-            </fieldset>
         </form>
-    </section> 
+    </nav>
     
     <!-- ||||||||||||||Contents②|||||||||||| -->
-    <section class="container">
-        <div>
+        <section class="col-xs-12 col-sm-6 col-md-6">
             <h2>一覧</h2>
             <table class="table table-hover table-condensed" >
                 <thead class="thead-inverse">
@@ -114,8 +127,9 @@
                     <td id="userno" th:text="${mydataBean.message}">04/17(木)</td>
                 </tr>
             </table>
-        </div>
-    </section>  
+        </section>
+    </article> 
+        </div> 
     <!-- ==============Contents============== -->
     
     <!-- ==============modal window============== -->
@@ -131,6 +145,7 @@
 
 <script type="text/javascript" src="/js/header.js" th:src="@{/js/header.js}"></script>
 <script type="text/javascript" src="/js/mordal.js" th:src="@{/js/mordal.js}"></script>
+<script type="text/javascript" src="/js/common.js" th:src="@{/js/common.js}"></script>
 <script type="text/javascript" src="file:///Users/uemototakira/Documents/workspace-sts-3.8.2.RELEASE/HouseholdAccountBook/src/main/resources/static/js/summoney.js" th:src="@{/js/summoney.js}"></script>
 <script type="text/javascript" src="file:///Users/uemototakira/Documents/workspace-sts-3.8.2.RELEASE/HouseholdAccountBook/src/main/resources/static/js/mymordal.js" th:src="@{/js/mymordal.js}"></script>
 <script type="text/javascript" src="/js/search.js" th:src="@{/js/search.js}"></script>

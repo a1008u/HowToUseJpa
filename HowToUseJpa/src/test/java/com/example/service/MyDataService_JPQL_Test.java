@@ -142,7 +142,6 @@ public class MyDataService_JPQL_Test {
     public void Test4_2_delete() throws Exception {
     	
     	// Set Up
-    	
     	Integer id= 2;
     	MyDataBean MyDataBean = new MyDataBean();
     	MyDataBean.setId(id);
