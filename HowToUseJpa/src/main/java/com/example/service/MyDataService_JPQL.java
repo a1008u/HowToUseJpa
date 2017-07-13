@@ -69,7 +69,7 @@ public class MyDataService_JPQL extends MyDataService{
 	public List<MyDataBean> find_All() {
 		
 		List<MyData> MyDatalList = MyDataRepositoryJPQL.find_All();
-		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
+		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBeanList(MyDatalList);
 		
 		return MyDataBeanList;
 	}
@@ -84,7 +84,7 @@ public class MyDataService_JPQL extends MyDataService{
 	public List<MyDataBean> find_many(MyDataBean MyDataBean) {
 		
 		List<MyData> MyDatalList = MyDataRepositoryJPQL.find_many(MyDataBean);
-		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
+		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBeanList(MyDatalList);
 		
 		return  MyDataBeanList;
 	}

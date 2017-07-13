@@ -60,7 +60,7 @@ public abstract class MyDataService {
 		 */
 		public abstract void delete(MyDataBean MyDataBean);
 		
-		public List<MyDataBean> from_MyDatalList_To_MyDataBean(List<MyData> MyDatalList){
+		public List<MyDataBean> from_MyDatalList_To_MyDataBeanList(List<MyData> MyDatalList){
 
 			List<MyDataBean> MyDataBeanList =  new ArrayList<>();
 			MyDatalList.stream()

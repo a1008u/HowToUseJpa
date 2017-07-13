@@ -23,19 +23,10 @@ public class MyDataService_Factory {
 	
 	public MyDataService create(MyDataForm MyDataForm) {
 		
-		// TODO: Stateパターンに変更
-		if ("Repository".equals(MyDataForm.getJpa()) || StringUtils.isEmpty(MyDataForm.getJpa())) {
-			
-			MyDataService = MyDataServiceRepository;
-			
-		} else if("JPQL".equals(MyDataForm.getJpa())) {
-			
-			MyDataService = MyDataServiceJPQL;
-			
-		} else if("Criteria API".equals(MyDataForm.getJpa())) {
-			
-			MyDataService = MyDataServiceCriteriaAPI;
-		}
+		// 三項演算子にて、利用する演算子を制御（デフォルトは、MyDataServiceRepository）
+		MyDataService = "JPQL".equals(MyDataForm.getJpa())? MyDataServiceJPQL
+										: "Criteria API".equals(MyDataForm.getJpa()) ? MyDataServiceCriteriaAPI
+									    : MyDataServiceRepository;
 		
 		return MyDataService;
 		

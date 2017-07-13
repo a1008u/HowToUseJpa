@@ -63,7 +63,6 @@ public class MyDataController {
 	// 2.ルート---------------------------------------------------------
 	@GetMapping
     ModelAndView MyDataList(MyDataForm MyDataForm, ModelAndView mav) {
-		
 		create_MyDataList(MyDataForm);
 		mav_create_to_top(MyDataForm, mav);
 		return mav;
@@ -85,57 +84,53 @@ public class MyDataController {
 	}
 	
 	
-	// 3.ルート---------------------------------------------------------
+	// 3.検索時に利用---------------------------------------------------------
 	@PostMapping(value="operate_form")
 	ModelAndView operate_form(@Validated @ModelAttribute("mydataform")MyDataForm MyDataForm, BindingResult result, ModelAndView mav) {
 		
+		// 単項目チェック
 		if (result.hasErrors()) {
-			
 			create_MyDataList(MyDataForm);
 			mav_create_to_top(MyDataForm, mav);
+			return mav;
+		}
 			
-		} else {
+		//　TODO：相関チェック
 			
-			//　TODO：相関チェック
-			
-			/*　TODO : リファクタリング(Factoryパターン+Strategyパターン+Stateパターンに変更)
-			 * sqlの利用
-			 * 1.repository + Criteria API 進捗：65%
-			 * 2.JPQL 進捗：65%
-			 * 3.Criteria API 進捗：65%
-			 */
-			
-			// Set Up
-			MyDataService MyDataService = MyDataService_Factory.create(MyDataForm);
-			MyDataBean MyDataBean = new MyDataBean();
-			BeanUtils.copyProperties(MyDataForm, MyDataBean);
-			String SQL = MyDataForm.getSql();
-			
-			switch (SQL) {
-			
+		/*　TODO : リファクタリング(Factoryパターン+Strategyパターン+Stateパターンに変更)
+		 * sqlの利用
+		 * 1.repository + Criteria API 進捗：65%
+		 * 2.JPQL 進捗：65%
+		 * 3.Criteria API 進捗：65%
+		 */
+		
+		// Set Up
+		MyDataService MyDataService = MyDataService_Factory.create(MyDataForm);
+		MyDataBean MyDataBean = new MyDataBean();
+		BeanUtils.copyProperties(MyDataForm, MyDataBean);
+		String CRUD = MyDataForm.getSql();
+		
+		switch (CRUD) {
+		
 			case "create":
-				
 				MyDataService.create(MyDataBean);
-				return new ModelAndView("redirect:/");
+				break;
 				
 			case "read":
-				
 				List<MyDataBean> MyDataList = MyDataService.find_many(MyDataBean);
 				MyDataForm.setMydatalist(MyDataList);
 				mav_create_to_top(MyDataForm, mav);
-				break;
+				return mav;
 				
 			case "update":
 				MyDataService.update(MyDataBean);
-				return new ModelAndView("redirect:/");
+				break;
 				
 			case "delete":
 				MyDataService.delete(MyDataBean);
-				return new ModelAndView("redirect:/");
-			};
-		}
+				break;
+		};
 		
-		return mav;
-		
+		return new ModelAndView("redirect:/");
 	}	
 }

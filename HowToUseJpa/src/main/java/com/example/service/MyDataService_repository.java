@@ -53,7 +53,6 @@ public class MyDataService_repository extends MyDataService {
 		if (MyData == null) return MyDataBean;
 		
 		BeanUtils.copyProperties(MyData, MyDataBean);
-		
 		return MyDataBean;
 	}
 	
@@ -91,6 +90,7 @@ public class MyDataService_repository extends MyDataService {
 		return MyDataBean;
 	}
 	// 利用しない-----------------------------------------------------------------
+	
 	/**
 	 * 検索(全件抽出)
 	 * @param MyDataBean Veiw上のデータ
@@ -101,7 +101,7 @@ public class MyDataService_repository extends MyDataService {
 	public  List<MyDataBean> find_All() {
 		
 		List<MyData> MyDatalList = MyDataRepository.findAll();
-		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
+		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBeanList(MyDatalList);
 		
         return  MyDataBeanList;
 	}
@@ -116,7 +116,7 @@ public class MyDataService_repository extends MyDataService {
 	public List<MyDataBean> find_many(MyDataBean MyDataBean) {
 		
 		List<MyData> MyDatalList = SpecificationsMyData.find_many(MyDataBean);
-		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBean(MyDatalList);
+		List<MyDataBean> MyDataBeanList = from_MyDatalList_To_MyDataBeanList(MyDatalList);
 		
 		return  MyDataBeanList;
 	}
